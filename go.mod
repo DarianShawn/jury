@@ -3,7 +3,7 @@ module github.com/dogechain-lab/jury
 go 1.16
 
 require (
-	github.com/btcsuite/btcd v0.22.0-beta
+	github.com/btcsuite/btcd v0.22.1
 	github.com/containerd/cgroups v1.0.2 // indirect
 	github.com/elastic/gosigar v0.14.2 // indirect
 	github.com/go-kit/kit v0.12.0
@@ -47,7 +47,7 @@ require (
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/godbus/dbus/v5 v5.0.6 // indirect
-	github.com/howeyc/gopass v0.0.0-20210920133722-c8aef6fb66ef // indirect
+	github.com/howeyc/gopass v0.0.0-20210920133722-c8aef6fb66ef
 	github.com/ipfs/go-cid v0.1.0 // indirect
 	github.com/klauspost/compress v1.14.2 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
