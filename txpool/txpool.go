@@ -549,22 +549,12 @@ func (p *TxPool) validateTx(tx *types.Transaction) error {
 // successful, an account is created for this address
 // (only once) and an enqueueRequest is signaled.
 func (p *TxPool) addTx(origin txOrigin, tx *types.Transaction) error {
+	tx.ComputeHash()
+
 	p.logger.Debug("add tx",
 		"origin", origin.String(),
 		"hash", tx.Hash.String(),
 	)
-
-	// validate incoming tx
-	if err := p.validateTx(tx); err != nil {
-		return err
-	}
-
-	// check for overflow
-	if p.gauge.read()+slotsRequired(tx) > p.gauge.max {
-		return ErrTxPoolOverflow
-	}
-
-	tx.ComputeHash()
 
 	// check if already known
 	if _, ok := p.index.get(tx.Hash); ok {
@@ -580,6 +570,16 @@ func (p *TxPool) addTx(origin txOrigin, tx *types.Transaction) error {
 		} else {
 			return ErrAlreadyKnown
 		}
+	}
+
+	// validate incoming tx
+	if err := p.validateTx(tx); err != nil {
+		return err
+	}
+
+	// check for overflow
+	if p.gauge.read()+slotsRequired(tx) > p.gauge.max {
+		return ErrTxPoolOverflow
 	}
 
 	// initialize account for this address once
