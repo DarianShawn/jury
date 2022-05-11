@@ -133,7 +133,7 @@ type TxPool struct {
 	index lookupMap
 
 	// all the transactions sorted by max gas price
-	// priced *txPricedList
+	priced *txPricedList // All transactions sorted by price
 
 	// networking stack
 	topic *network.Topic
@@ -188,6 +188,7 @@ func NewTxPool(
 		priceLimit:  config.PriceLimit,
 		sealing:     config.Sealing,
 	}
+	pool.priced = newTxPricedList(&pool.index)
 
 	// Attach the event manager
 	pool.eventManager = newEventManager(pool.logger)
