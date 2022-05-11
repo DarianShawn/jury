@@ -103,3 +103,35 @@ func (t *Transaction) ExceedsBlockGasLimit(blockGasLimit uint64) bool {
 func (t *Transaction) IsUnderpriced(priceLimit uint64) bool {
 	return t.GasPrice.Cmp(big.NewInt(0).SetUint64(priceLimit)) < 0
 }
+
+func (t *Transaction) EstimatedPrice() *big.Int {
+	if t.GasPrice == nil {
+		return big.NewInt(0)
+	}
+
+	return t.GasPrice.Mul(t.GasPrice, big.NewInt(int64(t.Gas)))
+}
+
+// Transactions implements DerivableList for transactions.
+type Transactions []*Transaction
+
+// Len returns the length of s.
+func (s Transactions) Len() int { return len(s) }
+
+// TxDifference returns a new set which is the difference between a and b.
+func TxDifference(a, b Transactions) Transactions {
+	keep := make(Transactions, 0, len(a))
+
+	remove := make(map[Hash]struct{})
+	for _, tx := range b {
+		remove[tx.Hash] = struct{}{}
+	}
+
+	for _, tx := range a {
+		if _, ok := remove[tx.Hash]; !ok {
+			keep = append(keep, tx)
+		}
+	}
+
+	return keep
+}

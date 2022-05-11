@@ -237,3 +237,49 @@ func (q *maxPriceQueue) Pop() interface{} {
 
 	return x
 }
+
+// minPriceHeap is a heap.Interface implementation over transactions for retrieving
+// price-sorted transactions to discard when the pool fills up. If baseFee is set
+// then the heap is sorted based on the effective tip based on the given base fee.
+// If baseFee is nil then the sorting is based on gasFeeCap.
+type minPriceHeap struct {
+	// baseFee *big.Int // heap should always be re-sorted after baseFee is changed
+	list []*types.Transaction
+}
+
+func (h *minPriceHeap) Len() int      { return len(h.list) }
+func (h *minPriceHeap) Swap(i, j int) { h.list[i], h.list[j] = h.list[j], h.list[i] }
+
+func (h *minPriceHeap) Less(i, j int) bool {
+	switch h.cmp(h.list[i], h.list[j]) {
+	case -1:
+		return true
+	case 1:
+		return false
+	default:
+		return h.list[i].Nonce > h.list[j].Nonce
+	}
+}
+
+func (h *minPriceHeap) cmp(a, b *types.Transaction) int {
+	return a.EstimatedPrice().Cmp(b.EstimatedPrice())
+}
+
+func (h *minPriceHeap) Push(x interface{}) {
+	tx, ok := x.(*types.Transaction)
+	if !ok {
+		return
+	}
+
+	h.list = append(h.list, tx)
+}
+
+func (h *minPriceHeap) Pop() interface{} {
+	old := h.list
+	n := len(old)
+	x := old[n-1]
+	old[n-1] = nil
+	h.list = old[0 : n-1]
+
+	return x
+}

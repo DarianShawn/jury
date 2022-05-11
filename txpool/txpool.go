@@ -132,6 +132,9 @@ type TxPool struct {
 	// transactions present in the pool
 	index lookupMap
 
+	// all the transactions sorted by max gas price
+	// priced *txPricedList
+
 	// networking stack
 	topic *network.Topic
 
