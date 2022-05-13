@@ -117,6 +117,8 @@ func (m *accountsMap) allTxs(includeEnqueued bool) (
 		defer account.promoted.unlock()
 
 		if account.promoted.length() != 0 {
+			// FIXME: slice is not thread-safe. Would it crash when JSONRPC addTx and
+			// query allTxs together?
 			allPromoted[addr] = account.promoted.queue
 		}
 
@@ -125,6 +127,8 @@ func (m *accountsMap) allTxs(includeEnqueued bool) (
 			defer account.enqueued.unlock()
 
 			if account.enqueued.length() != 0 {
+				// FIXME: slice is not thread-safe. Would it crash when JSONRPC addTx and
+				// query allTxs together?
 				allEnqueued[addr] = account.enqueued.queue
 			}
 		}
