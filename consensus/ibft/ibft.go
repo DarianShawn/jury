@@ -61,6 +61,20 @@ type syncerInterface interface {
 }
 
 // Ibft represents the IBFT consensus mechanism object
+//
+// FIXME: We use the IBFT consense, which is described in
+// https://github.com/ethereum/EIPs/issues/650
+// And the validator set comes from Proof of Stake, who needs the community access
+// approval, which currently under the responsibility of the administrator.
+//
+// So if the state machine not working as the EIP issue described, it shall be a bug. Then we
+// need a bug report and bug fix.
+// And we might need to checkout more testcases for the consensus.
+//
+// *Blocks in Istanbul BFT protocol are final, which means that there are no forks and any valid
+// block must be somewhere in the main chain.*
+// Could not confirm with this description, because light node might connect to the faulty nodes,
+// which download invalid blocks, who would definitly reorg (fork) the blockchain.
 type Ibft struct {
 	sealing bool // Flag indicating if the node is a sealer
 
