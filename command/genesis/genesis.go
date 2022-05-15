@@ -9,6 +9,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// FIXME: Current network deploy steps:
+// 1. Set up 4 initial validators in Genensis block, together with the validatorset contract admin,
+//    the bridge contract admin and signers, the vault contract admin.
+//    * Network configs: `--consensus ibft --pos --epoch-size 7200`
+// 2. Use bridge contract `deposit()` to simulate bridging the wDoge assets from Dogecoin blockchain.
+// 3. Add a new ERC20 token contract, mint enough token, e.g. 1 billion.
+// 4. Set the ECR20 token to bridge contract using `setGovernorToken()`.
+// 5. Add more stakers by staking 10,000,000 wDoge each.
+// 6. Use validatorset contract `setValidator()` to set those new stakers to become validators.
 func GetCommand() *cobra.Command {
 	genesisCmd := &cobra.Command{
 		Use:     "genesis",
