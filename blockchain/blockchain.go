@@ -701,6 +701,14 @@ func (b *Blockchain) WriteBlock(block *types.Block) error {
 		return err
 	}
 
+	// this early return simulate something wrong when writing block.
+	// After this partial write, take a little break (like 1 minute or so), then restart
+	// the validator node with normal one.
+	// expected results: This validator node should always failed in bulk sycning. The only
+	// way to recover: remove the whole db data, then sync blockchain data from the Genesis
+	// block.
+	return nil
+
 	//	update snapshot
 	if err := b.consensus.ProcessHeaders([]*types.Header{header}); err != nil {
 		return err
